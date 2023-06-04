@@ -93,30 +93,32 @@ const data = [
     quantity: 0,
     quantity_label: "transformer",
   },
-  
 ];
 
 const tablePagination = {
     hideOnSinglePage: true
 }
 
-const onFinish = (values) => {
+const onFinish = (values, setOutputPanelState) => {
+    setOutputPanelState({isActive: true, formValues:values})
     console.log('Success:', values);
   };
   
-  const onFinishFailed = (errorInfo) => {
+  const onFinishFailed = (errorInfo, setOutputPanelState) => {
+
+    setOutputPanelState({isActive: false, formValues:errorInfo})
     console.log('Failed:', errorInfo);
   };
 
-function DeviceInfoTable() {
+function DeviceInfoTable({outputPanelState, setOutputPanelState}) {
     return (
         <Form
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        onFinish={(values) => onFinish(values, setOutputPanelState)}
+        onFinishFailed={(errorInfo) => onFinishFailed(errorInfo, setOutputPanelState)}
         autoComplete="off"
         >
             <Table columns={columns} dataSource={data} pagination={tablePagination} />

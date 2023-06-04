@@ -1,6 +1,7 @@
-import React from 'react';
+import {React, useState} from 'react';
 import './index.css';
 import DeviceInfoTable from './DeviceInfoTable';
+import OutputPanel from './OutputPanel';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 
 const { Header, Content, Footer } = Layout;
@@ -20,6 +21,9 @@ function HeaderText() {
 }
 
 function App() {
+
+  const [outputPanelState, setOutputPanelState] = useState({isActive: false, formValues:{}});
+  
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -47,10 +51,11 @@ function App() {
         <Breadcrumb.Item>Site Specifications</Breadcrumb.Item>
       </Breadcrumb>
       <div style={{ padding: 24, minHeight: 380, background: colorBgContainer }}>
-        <DeviceInfoTable></DeviceInfoTable>
+        <DeviceInfoTable outputPanelState={outputPanelState} setOutputPanelState={setOutputPanelState}></DeviceInfoTable>
       </div>
     </Content>
-      <Footer style={{ textAlign: 'center' }}>Created by Ameya Kamat © 2023</Footer>
+    <OutputPanel outputPanelState={outputPanelState}></OutputPanel>
+    <Footer style={{ textAlign: 'center' }}>Created by Ameya Kamat © 2023</Footer>
     </Layout>
   );
 };
