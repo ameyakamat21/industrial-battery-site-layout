@@ -1,5 +1,6 @@
 import {React, useState} from 'react';
 import './index.css';
+import DragAndDropPanel from './DragAndDropPanel';
 import { Breadcrumb, Layout, Menu, Empty,  Card, Col, Row, theme } from 'antd';
 
 const { Header, Content, Footer } = Layout;
@@ -11,13 +12,12 @@ function OutputPanel({outputPanelState}) {
         return (
             <Layout  className="site-layout" style={{ padding: '0 50px' }}>
                 <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Site Layout</Breadcrumb.Item>
             </Breadcrumb>
             <Content style={{ minHeight: 280 }}>
                 <Row gutter={16}>
                     <Col span={16}>
                         <Card  title="Site Layout" bordered={false}>
-                            Card content
+                            <DragAndDropPanel formInput={outputPanelState["formValues"]}></DragAndDropPanel>
                         </Card>
                     </Col>
                     <Col span={8}>
@@ -35,7 +35,6 @@ function OutputPanel({outputPanelState}) {
         return (
             <Content className="site-layout" style={{ padding: '0 50px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Site Layout</Breadcrumb.Item>
             </Breadcrumb>
             <div style={{ padding: 24, minHeight: 380, background: colorBgContainer }}>
             <Empty></Empty>

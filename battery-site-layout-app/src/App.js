@@ -48,7 +48,6 @@ function App() {
 
     <Content className="site-layout" style={{ padding: '0 50px' }}>
       <Breadcrumb style={{ margin: '16px 0' }}>
-        <Breadcrumb.Item>Site Specifications</Breadcrumb.Item>
       </Breadcrumb>
       <div style={{ padding: 24, minHeight: 380, background: colorBgContainer }}>
         <DeviceInfoTable outputPanelState={outputPanelState} setOutputPanelState={setOutputPanelState}></DeviceInfoTable>
