@@ -1,6 +1,7 @@
 import { useDrag } from 'react-dnd'
 import { ItemTypes } from './ItemTypes.js'
-import pixelsPerFoot from './Constants';
+
+const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
 export const Box = ({ id, left, top, hideSourceOnDrag, children, dimensions }) => {
   console.log("Box l=" + dimensions["length"] + ", w=" + dimensions["width"])
@@ -10,8 +11,8 @@ export const Box = ({ id, left, top, hideSourceOnDrag, children, dimensions }) =
     backgroundColor: 'white',
     padding: '0.25rem 0.5rem',
     cursor: 'move',
-    width: `${dimensions["width"]*pixelsPerFoot}px`,
-    height: `${dimensions["length"]*pixelsPerFoot}px`,
+    width: `${dimensions["width"]*PIXELS_PER_FOOT}px`,
+    height: `${dimensions["length"]*PIXELS_PER_FOOT}px`,
     wordWrap: 'break-word',
     fontSize: '14px',
   };

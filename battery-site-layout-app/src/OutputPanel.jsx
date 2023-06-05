@@ -2,7 +2,9 @@ import {React, useState} from 'react';
 import './index.css';
 import DragAndDropPanel from './DragAndDropPanel';
 import { Breadcrumb, Layout, Menu, Empty,  Card, Col, Row, theme } from 'antd';
+import QuoteTable from './QuoteTable';
 
+const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 const { Header, Content, Footer } = Layout;
 
 function OutputPanel({outputPanelState}) {
@@ -11,18 +13,18 @@ function OutputPanel({outputPanelState}) {
     if(outputPanelState["isActive"]) { 
         return (
             <Layout  className="site-layout" style={{ padding: '0 50px' }}>
-                <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb style={{ margin: '16px 0' }}>
             </Breadcrumb>
             <Content style={{ minHeight: 280 }}>
                 <Row gutter={16}>
                     <Col span={16}>
-                        <Card  title="Site Layout" bordered={false}>
+                        <Card  title="Site Layout" bordered={false} >
                             <DragAndDropPanel formInput={outputPanelState["formValues"]}></DragAndDropPanel>
                         </Card>
                     </Col>
                     <Col span={8}>
                         <Card title="Bill of materials" bordered={false}>
-                            Card content
+                            <QuoteTable formInput={outputPanelState["formValues"]}></QuoteTable>
                         </Card>
                     </Col>
                 </Row>

@@ -3,11 +3,15 @@ import { useCallback, useState } from "react";
 import { useDrop } from "react-dnd";
 import { Box } from "./Box.js";
 import { ItemTypes } from "./ItemTypes.js";
-import pixelsPerFoot from './Constants';
 import teslaDeviceOfferings from './DeviceInfo'
 
+const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
+
+console.log("PIXELS_PER_FOOT: " + PIXELS_PER_FOOT + ", MAX_WIDTH_FEET: " + MAX_WIDTH_FEET);
+
 const styles = {
-  height: 300,
+  height: MAX_WIDTH_FEET*PIXELS_PER_FOOT*2,
+  width: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
   border: "1px solid black",
   position: "relative"
 };
@@ -23,8 +27,8 @@ function genrateBoxProperties(formInput) {
     for (let i = 0; i < count; i++) {
       var xPos = currCol*10;
       var yPos = columnFillPositions[currCol]
-      var leftOffset = xPos * pixelsPerFoot;
-      var topOffset = yPos * pixelsPerFoot;
+      var leftOffset = xPos * PIXELS_PER_FOOT;
+      var topOffset = yPos * PIXELS_PER_FOOT;
       columnFillPositions[currCol] += boxDimensions["length"];
       var newBox = { top: topOffset, left: leftOffset, title: deviceType, dimensions: boxDimensions }
       boxes[boxId] = newBox;
@@ -36,8 +40,8 @@ function genrateBoxProperties(formInput) {
 }
 
 function doSnapToGrid(x, y) {
-  const snappedX = Math.round(x / (10*pixelsPerFoot)) * (10*pixelsPerFoot);
-  const snappedY = Math.round(y / (10*pixelsPerFoot)) * (10*pixelsPerFoot);
+  const snappedX = Math.round(x / (10*PIXELS_PER_FOOT)) * (10*PIXELS_PER_FOOT);
+  const snappedY = Math.round(y / (10*PIXELS_PER_FOOT)) * (10*PIXELS_PER_FOOT);
   return [snappedX, snappedY];
 }
 
@@ -62,11 +66,6 @@ export const DragAndDropContainer = ({ snapToGrid, formInput }) => {
   const moveBox = useCallback(
     (id, left, top) => {
        setBoxes(
-      //   update(boxes, {
-      //     [id]: {
-      //       $merge: { left, top }
-      //     }
-      //   })
         (boxes) => {      
           boxes[id].left = left;
           boxes[id].top = top;
@@ -84,15 +83,13 @@ export const DragAndDropContainer = ({ snapToGrid, formInput }) => {
         var left = Math.round(item.left + delta.x);
         var top = Math.round(item.top + delta.y);
         [left, top] = doSnapToGrid(left, top);
-        // moveBox(item.id, left, top);
         var boxesCopy = {...boxes};
         boxesCopy[item.id].left = left;
         boxesCopy[item.id].top = top;
         setBoxes(boxesCopy);
         return undefined;
       }
-    }),
-    [moveBox]
+    })
   );
   return (
     <div ref={drop} style={styles}>

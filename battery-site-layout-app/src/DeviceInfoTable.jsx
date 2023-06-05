@@ -1,4 +1,4 @@
-import { Space, Table, Tag,  Button, Form, Input, Card } from 'antd';
+import { Space, Table, Tag,  Button, Form, Input, Card, Breadcrumb } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo';
 
 const columns = [
@@ -75,10 +75,12 @@ function DeviceInfoTable({outputPanelState, setOutputPanelState}) {
           >
               <Table columns={columns} dataSource={Object.values(teslaDeviceOfferings)} pagination={tablePagination} />
 
-              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                  Generate layout
-              </Button>
+              <Form.Item wrapperCol={{ offset: 18, span: 4 }}>
+                <Breadcrumb style={{ margin: '16px 0' }}>
+                </Breadcrumb> 
+                <Button type="primary" htmlType="submit" style={{width: "100%"}}>
+                    Generate layout
+                </Button>
               </Form.Item>
           </Form>
         </Card>
