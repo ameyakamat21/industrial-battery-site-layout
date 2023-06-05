@@ -1,3 +1,3 @@
-const pixelsPerFoot=5;
+const pixelsPerFoot=8;
 
 export default pixelsPerFoot;
