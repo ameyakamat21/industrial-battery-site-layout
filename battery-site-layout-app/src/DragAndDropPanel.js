@@ -10,7 +10,7 @@ function DragAndDropPanel({formInput}) {
     <DndProvider backend={HTML5Backend}>
         <div>
             <DragAndDropContainer snapToGrid={true} formInput={formInput} />
-            <CustomDragLayer snapToGrid={true} />
+            {/* <CustomDragLayer snapToGrid={true} /> */}
         </div>
     </DndProvider>
   )

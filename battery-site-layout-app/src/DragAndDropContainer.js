@@ -5,6 +5,7 @@ import { DraggableBox } from './DraggableBox.js'
 import { ItemTypes } from './ItemTypes.js'
 import { snapToGrid as doSnapToGrid } from './snapToGrid.js'
 import teslaDeviceOfferings from './DeviceInfo'
+import pixelsPerFoot from './Constants.js'
 
 const styles = {
  
@@ -24,22 +25,19 @@ function genrateBoxProperties(formInput) {
     for (let i = 0; i < count; i++) {
       var xPos = currCol*10;
       var yPos = columnFillPositions[currCol]
+      var leftOffset = xPos * pixelsPerFoot;
+      var topOffset = yPos * pixelsPerFoot;
       columnFillPositions[currCol] += boxDimensions["length"];
-      var newBox = { top: yPos, left: xPos, title: deviceType }
+      var newBox = { top: topOffset, left: leftOffset, title: deviceType, dimensions: boxDimensions }
       boxes[boxId] = newBox;
-      currCol+=1
+      currCol = (currCol+1)%10;
       boxId += 1;
     }
   }
-  console.log("Boxes: " + boxes)
   return boxes;
 }
 
 export const DragAndDropContainer = ({ snapToGrid, formInput }) => {
-  // const [boxes, setBoxes] = useState({
-  //   a: { top: 20, left: 80, title: 'Drag me aroundddddd' },
-  //   b: { top: 180, left: 20, title: 'Drag me too' },
-  // })
 
   const [boxes, setBoxes] = useState(genrateBoxProperties(formInput));
   const moveBox = useCallback(
