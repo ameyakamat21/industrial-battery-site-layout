@@ -4,14 +4,15 @@ import { ItemTypes } from './ItemTypes.js'
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
 export const Box = ({ id, left, top, hideSourceOnDrag, children, dimensions }) => {
+
   var style = {
     position: 'absolute',
     border: '1px dashed gray',
     backgroundColor: 'white',
     padding: '0.25rem 0.5rem',
     cursor: 'move',
-    width: `${dimensions["width"]*PIXELS_PER_FOOT}px`,
-    height: `${dimensions["length"]*PIXELS_PER_FOOT}px`,
+    width: `${dimensions.widthPx}px`,
+    height: `${dimensions.lengthPx}px`,
     wordWrap: 'break-word',
     fontSize: '14px',
   };

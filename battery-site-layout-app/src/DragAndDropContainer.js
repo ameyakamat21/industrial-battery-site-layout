@@ -7,10 +7,6 @@ import teslaDeviceOfferings from './DeviceInfo'
 
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
-console.log("PIXELS_PER_FOOT: " + PIXELS_PER_FOOT + ", MAX_WIDTH_FEET: " + MAX_WIDTH_FEET);
-
-var boxesList = {}
-
 const styles = {
   height: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
   width: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
@@ -25,24 +21,54 @@ function doSnapToGrid(x, y) {
   return [snappedX, snappedY];
 }
 
-function doesPointLieInBox(point, box) {
-  var topLeft = {x: box.left, y: box.top}
-  var topRight = {x: box.left + box.dimensions.width, y: box.top}
-  var bottomLeft = {x: box.left, y: box.top + box.dimensions.length}
-  var bottomRight = {x: box.left + box.dimensions.width, y: box.top + box.dimensions.length}
-}
+function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
+  var boxToCheck = boxes[id];
+  var boxToCheckRight = boxToCheckLeft + boxToCheck.dimensions.widthPx;
+  var boxToCheckBottom = boxToCheckTop + boxToCheck.dimensions.lengthPx;
 
-function isValidDrop(boxes, id, left, top) {
   for(var currBoxId in boxes) {
     if(id != currBoxId) {
-      var currBox = boxes[id];
+      var currBox = boxes[currBoxId];
+      var currBoxTop = currBox.top;
+      var currBoxLeft = currBox.left;
+      var currBoxRight = currBoxLeft + currBox.dimensions.widthPx;
+      var currBoxBottom = currBoxTop + currBox.dimensions.lengthPx;
+      // console.log(`Checking overlap ${id} <${boxToCheckTop}, ${boxToCheckLeft}, ${boxToCheckBottom}, ${boxToCheckRight}> 
+        // with ${currBoxId} <${currBoxTop}, ${currBoxLeft}, ${currBoxBottom}, ${currBoxRight}>`);
+
+      if(boxToCheckTop == currBoxTop && boxToCheckLeft == currBoxLeft) {
+        // console.log("TopLeft conflicts with box: " + currBoxId);
+        return false;
+      }
+       
+      if(boxToCheckTop == currBoxTop && boxToCheckRight == currBoxRight) {
+        // console.log("TopRight conflicts with box: " + currBoxId);
+        return false;
+      }
+       
+      if(boxToCheckBottom == currBoxBottom && boxToCheckLeft == currBoxLeft) {
+        // console.log("BottomLeft conflicts with box: " + currBoxId);
+        return false;
+      }
+       
+      if(boxToCheckBottom == currBoxBottom && boxToCheckRight == currBoxRight) {
+        // console.log("BottomRight conflicts with box: " + currBoxId);
+        return false;
+      }
+
+      if(boxToCheckTop >= currBoxTop && boxToCheckTop <= currBoxBottom &&
+          boxToCheckBottom >= currBoxTop && boxToCheckBottom <= currBoxBottom &&
+          boxToCheckLeft >= currBoxLeft && boxToCheckLeft <= currBoxRight &&
+          boxToCheckRight >= currBoxLeft && boxToCheckRight <= currBoxRight) {
+        return false;
+      }
+
     }
   }
+  return true;
 }
 
 export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
-  let getBoxes = () => boxes;
-  console.log("boxes generated: " + JSON.stringify(getBoxes()));
 
   const moveBox = useCallback(
     (id, left, top) => {
@@ -55,8 +81,14 @@ export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
       )
     },
     [boxes, setBoxes],
-  )
+  );
   
+  const canDrop = useCallback(
+    (id, left, top) => {
+      return isValidDrop(boxes, id, left, top);
+    },
+    [boxes]
+  );
   
   const [, drop] = useDrop(
     () => ({
@@ -69,8 +101,15 @@ export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
         moveBox(item.id, left, top);
         return undefined;
       },
+      canDrop(item, monitor) {
+        const delta = monitor.getDifferenceFromInitialOffset();
+        var left = Math.round(item.left + delta.x);
+        var top = Math.round(item.top + delta.y);
+        [left, top] = doSnapToGrid(left, top);
+        return canDrop(item.id, left, top);
+      },
     }),
-    [moveBox],
+    [moveBox, canDrop],
   )
 
   return (
@@ -86,7 +125,7 @@ export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
             hideSourceOnDrag={true}
             dimensions={dimensions}
           >
-            {title}
+            {key}
           </Box>
         );
       })}

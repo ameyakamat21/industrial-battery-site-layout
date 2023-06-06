@@ -17,7 +17,16 @@ function genrateBoxProperties(formInput) {
       var leftOffset = xPos * PIXELS_PER_FOOT;
       var topOffset = yPos * PIXELS_PER_FOOT;
       columnFillPositions[currCol] += boxDimensions["length"];
-      var newBox = { top: topOffset, left: leftOffset, title: deviceType, dimensions: boxDimensions }
+      boxDimensions.lengthPx = boxDimensions.length * PIXELS_PER_FOOT;
+      boxDimensions.widthPx = boxDimensions.width * PIXELS_PER_FOOT;
+
+      var newBox = { 
+        top: topOffset, 
+        left: leftOffset, 
+        title: deviceType, 
+        dimensions: boxDimensions,
+      }
+
       boxes[boxId] = newBox;
       currCol = (currCol+1)%10;
       boxId += 1;
