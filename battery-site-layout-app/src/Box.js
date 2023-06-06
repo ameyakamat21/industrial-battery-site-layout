@@ -7,7 +7,8 @@ export const Box = ({ id, left, top, hideSourceOnDrag, children, dimensions }) =
 
   var style = {
     position: 'absolute',
-    border: '1px dashed gray',
+    border: '1px solid gray',
+    borderRadius: '7px',
     backgroundColor: 'white',
     padding: '0.25rem 0.5rem',
     cursor: 'move',

@@ -10,7 +10,8 @@ const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 const styles = {
   height: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
   width: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
-  border: "1px solid black",
+  border: "1px solid #dedede",
+  borderRadius: '7px',
   position: "relative",
   textAlign: "center",
 };
@@ -25,6 +26,11 @@ function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
   var boxToCheck = boxes[id];
   var boxToCheckRight = boxToCheckLeft + boxToCheck.dimensions.widthPx;
   var boxToCheckBottom = boxToCheckTop + boxToCheck.dimensions.lengthPx;
+
+  // Check if being dropped outside the container
+  if(boxToCheckTop < 0 || boxToCheckLeft < 0 || boxToCheckBottom > styles.height || boxToCheckRight > styles.width) {
+    return false;
+  }
 
   for(var currBoxId in boxes) {
     if(id != currBoxId) {
@@ -60,6 +66,13 @@ function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
           boxToCheckBottom >= currBoxTop && boxToCheckBottom <= currBoxBottom &&
           boxToCheckLeft >= currBoxLeft && boxToCheckLeft <= currBoxRight &&
           boxToCheckRight >= currBoxLeft && boxToCheckRight <= currBoxRight) {
+        return false;
+      }
+     
+      if(currBoxTop >= boxToCheckTop && currBoxTop <= boxToCheckBottom &&
+          currBoxBottom >= boxToCheckTop && currBoxBottom <= boxToCheckBottom &&
+          currBoxLeft >= boxToCheckLeft && currBoxLeft <= boxToCheckRight &&
+          currBoxRight >= boxToCheckLeft && currBoxRight <= boxToCheckRight) {
         return false;
       }
 
