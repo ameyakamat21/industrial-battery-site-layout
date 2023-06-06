@@ -8,17 +8,22 @@ function genrateBoxProperties(formInput) {
   var boxId=0;
   var columnFillPositions = new Array(10).fill(0);
   var currCol = 0;
+  var rectangularAreaRight = 0;
+  var rectangularAreaBottom = 0;
   for(const deviceType in formInput) {
-    var boxDimensions = teslaDeviceOfferings[deviceType]["dimensions"];
+    var boxDimensions = teslaDeviceOfferings[deviceType].dimensions;
     var count = formInput[deviceType];
     for (let i = 0; i < count; i++) {
       var xPos = currCol*10;
       var yPos = columnFillPositions[currCol]
       var leftOffset = xPos * PIXELS_PER_FOOT;
       var topOffset = yPos * PIXELS_PER_FOOT;
-      columnFillPositions[currCol] += boxDimensions["length"];
+      columnFillPositions[currCol] += boxDimensions.length;
       boxDimensions.lengthPx = boxDimensions.length * PIXELS_PER_FOOT;
       boxDimensions.widthPx = boxDimensions.width * PIXELS_PER_FOOT;
+
+      rectangularAreaBottom = Math.max(rectangularAreaBottom, yPos + boxDimensions.length);
+      rectangularAreaRight = Math.max(rectangularAreaRight, xPos + boxDimensions.width);
 
       var newBox = { 
         top: topOffset, 
@@ -32,7 +37,10 @@ function genrateBoxProperties(formInput) {
       boxId += 1;
     }
   }
-  return boxes;
+  return {'boxes': boxes, 
+          'rectangularAreaBottom': rectangularAreaBottom, 
+          'rectangularAreaRight': rectangularAreaRight
+        };
 }
 
 const columns = [
@@ -85,9 +93,19 @@ const tablePagination = {
 }
 
 const onFinish = (values, setOutputPanelState, setBoxes) => {
-    setOutputPanelState({isActive: true, formValues:values})
-    var createdBoxes = genrateBoxProperties(values);
-    setBoxes(createdBoxes);
+    var boxProperties = genrateBoxProperties(values);
+
+    setOutputPanelState({
+      isActive: true, 
+      formValues:values,
+      rectangularArea: {
+        "top": 0,
+        "left": 0,
+        "width": boxProperties.rectangularAreaRight, 
+        "height": boxProperties.rectangularAreaBottom,
+      }
+    })
+    setBoxes(boxProperties.boxes);
     console.log('Success:', values);
   };
   

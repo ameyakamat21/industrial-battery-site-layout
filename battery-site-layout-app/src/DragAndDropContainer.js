@@ -95,8 +95,15 @@ function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
   return true;
 }
 
-export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
+export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, boxes, setBoxes}) => {
 
+  var rectArea = outputPanelState.rectangularArea;
+  rectArea.leftPx = rectArea.left*PIXELS_PER_FOOT;
+  rectArea.widthPx = rectArea.width*PIXELS_PER_FOOT;
+  rectArea.topPx = rectArea.top * PIXELS_PER_FOOT;
+  rectArea.heightPx = rectArea.height * PIXELS_PER_FOOT;
+
+  console.log(`rect area: <${rectArea.topPx} ${rectArea.leftPx} ${rectArea.widthPx} ${rectArea.heightPx}>`);
   const moveBox = useCallback(
     (id, left, top) => {
       setBoxes(
@@ -141,22 +148,27 @@ export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
 
   return (
     <Layout style={{backgroundColor: "white"}}>
-      <table style={{textAlign: "center", border: "1px solid black"}}>
-        <tbody>
+      <table style={{verticalAlign: "top", border: "1px solid black"}}>
+        <tbody style={{verticalAlign: "top", border: "1px solid black", textAlign: "center"}}>
           <tr>
-            <td></td>
+            <td style={{border: "1px solid black"}}></td>
             <td>
               <table style={{width:"100%", height:"100%", border: "1px solid black"}}> 
               <tbody>
                 <tr>
                   <td>
-                    number
+                    {rectArea.width} ft
                   </td>
                   </tr>
                   <tr>
                     <td style={{backgroundColor: "pink"}}>
                       
-                    <div style={{backgroundColor: "blue", width:"100%", height:"5px"}}>
+                    <div style={{
+                      backgroundColor: "blue",
+                      width:`${rectArea.widthPx}px`,
+                      height:"5px",
+                      margin: `0px ${rectArea.leftPx}px`
+                      }}>
                       </div>
                     </td>
                   </tr>
@@ -166,14 +178,20 @@ export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
           </tr>
           <tr>
             <td>
-              <table style={{width:"100%", height:"100%", border: "1px solid black", textAlign: "top"}}>
+              <table style={{width:"100%", height:"100%", border: "1px solid black", verticalAlign: "top"}}>
                 <tbody>
                   <tr>
                     <td>
-                      number
+                      {rectArea.height} ft
                     </td>
-                    <td style={{backgroundColor: "pink", width:"100%", height:"100%"}}>
-                      <div style={{backgroundColor: "blue", width:"100%", height:"500px"}}>
+                    <td style={{backgroundColor: "pink", height:"100%", verticalAlign: "top"}}>
+                      <div style={{
+                        backgroundColor: "blue", 
+                        width:"5px", 
+                        height:`${rectArea.heightPx}px`,
+                        margin:`${rectArea.topPx}px 0px`,
+                        verticalAlign: "top"
+                        }}>
                       </div>
                     </td>
                   </tr>

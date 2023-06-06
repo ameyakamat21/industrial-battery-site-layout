@@ -6,26 +6,13 @@ import { Breadcrumb, Layout, Menu, theme } from 'antd';
 
 const { Header, Content, Footer } = Layout;
 
-function FormContainer() {
-  return (
-    <div></div>
-  )
-}
-
-function HeaderText() {
-  return (
-    <h1>
-      Battery Site App
-    </h1>
-  )
-}
-
 function App() {
 
   const [boxes, setBoxes] = useState({});
   const [outputPanelState, setOutputPanelState] = useState(
     { isActive: false, 
       formValues:{}, 
+      rectangularArea: {},
     }
   );
   
@@ -61,7 +48,12 @@ function App() {
           setBoxes={setBoxes}>
         </DeviceInfoTable>
     </Content>
-    <OutputPanel outputPanelState={outputPanelState} boxes={boxes} setBoxes={setBoxes}></OutputPanel>
+    <OutputPanel 
+      outputPanelState={outputPanelState} 
+      setOutputPanelState={setOutputPanelState}
+      boxes={boxes} 
+      setBoxes={setBoxes}>
+    </OutputPanel>
     <Footer style={{ textAlign: 'center' }}>Created by Ameya Kamat © 2023</Footer>
     </Layout>
   );

@@ -7,7 +7,7 @@ import QuoteTable from './QuoteTable';
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 const { Header, Content, Footer } = Layout;
 
-function OutputPanel({outputPanelState, boxes, setBoxes}) {
+function OutputPanel({outputPanelState, setOutputPanelState, boxes, setBoxes}) {
 
     const { token: { colorBgContainer } } = theme.useToken();
     if(outputPanelState["isActive"]) { 
@@ -20,7 +20,8 @@ function OutputPanel({outputPanelState, boxes, setBoxes}) {
                     <Col span={16}>
                         <Card  title="Site Layout" bordered={false} style={{overflow: "auto"}}>
                             <DragAndDropPanel 
-                                formInput={outputPanelState["formValues"]} 
+                                outputPanelState={outputPanelState}
+                                setOutputPanelState={setOutputPanelState} 
                                 boxes={boxes} 
                                 setBoxes={setBoxes}>
                             </DragAndDropPanel>
