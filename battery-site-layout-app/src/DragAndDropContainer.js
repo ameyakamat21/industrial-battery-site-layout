@@ -3,17 +3,31 @@ import { useCallback, useState } from "react";
 import { useDrop } from "react-dnd";
 import { Box } from "./Box.js";
 import { ItemTypes } from "./ItemTypes.js";
+import { Breadcrumb, Layout, Menu, Empty,  Card, Col, Row, theme } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo'
 
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
+const { Header, Content, Footer } = Layout;
 
-const styles = {
+const dndContainerStyles = {
   height: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
   width: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
   border: "1px solid #dedede",
   borderRadius: '7px',
+  opacity: '50%',
   position: "relative",
   textAlign: "center",
+};
+
+const floorAreaContainerStyles = {
+  height: MAX_WIDTH_FEET*PIXELS_PER_FOOT + 10,
+  width: MAX_WIDTH_FEET*PIXELS_PER_FOOT + 10,
+  border: "25px solid red",
+  backgroundColor: "blue",
+  borderRadius: '7px',
+  position: "fixed",
+  textAlign: "center",
+  zIndex: 100,
 };
 
 function doSnapToGrid(x, y) {
@@ -28,7 +42,7 @@ function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
   var boxToCheckBottom = boxToCheckTop + boxToCheck.dimensions.lengthPx;
 
   // Check if being dropped outside the container
-  if(boxToCheckTop < 0 || boxToCheckLeft < 0 || boxToCheckBottom > styles.height || boxToCheckRight > styles.width) {
+  if(boxToCheckTop < 0 || boxToCheckLeft < 0 || boxToCheckBottom > dndContainerStyles.height || boxToCheckRight > dndContainerStyles.width) {
     return false;
   }
 
@@ -126,22 +140,68 @@ export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
   )
 
   return (
-    <div ref={drop} style={styles}>
-      {Object.keys(boxes).map((key) => {
-        const { top, left, title, dimensions } = boxes[key];
-        return (
-          <Box
-            key={key}
-            id={key}
-            left={left}
-            top={top}
-            hideSourceOnDrag={true}
-            dimensions={dimensions}
-          >
-            {key}
-          </Box>
-        );
-      })}
-    </div>
+    <Layout style={{backgroundColor: "white"}}>
+      <table style={{textAlign: "center", border: "1px solid black"}}>
+        <tbody>
+          <tr>
+            <td></td>
+            <td>
+              <table style={{width:"100%", height:"100%", border: "1px solid black"}}> 
+              <tbody>
+                <tr>
+                  <td>
+                    number
+                  </td>
+                  </tr>
+                  <tr>
+                    <td style={{backgroundColor: "pink"}}>
+                      
+                    <div style={{backgroundColor: "blue", width:"100%", height:"5px"}}>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <table style={{width:"100%", height:"100%", border: "1px solid black", textAlign: "top"}}>
+                <tbody>
+                  <tr>
+                    <td>
+                      number
+                    </td>
+                    <td style={{backgroundColor: "pink", width:"100%", height:"100%"}}>
+                      <div style={{backgroundColor: "blue", width:"100%", height:"500px"}}>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td>
+              <div ref={drop} style={dndContainerStyles}>
+                {Object.keys(boxes).map((key) => {
+                  const { top, left, title, dimensions } = boxes[key];
+                  return (
+                    <Box
+                      key={key}
+                      id={key}
+                      left={left}
+                      top={top}
+                      hideSourceOnDrag={true}
+                      dimensions={dimensions}
+                    >
+                      {key}
+                    </Box>
+                  );
+                })}
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </Layout>
   );
 };
