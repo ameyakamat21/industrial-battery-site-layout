@@ -18,7 +18,7 @@ function OutputPanel({outputPanelState}) {
             <Content style={{ minHeight: 280 }}>
                 <Row gutter={16}>
                     <Col span={16}>
-                        <Card  title="Site Layout" bordered={false} >
+                        <Card  title="Site Layout" bordered={false} style={{overflow: "auto"}}>
                             <DragAndDropPanel formInput={outputPanelState["formValues"]}></DragAndDropPanel>
                         </Card>
                     </Col>

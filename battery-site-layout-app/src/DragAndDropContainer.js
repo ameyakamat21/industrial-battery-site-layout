@@ -10,10 +10,11 @@ const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 console.log("PIXELS_PER_FOOT: " + PIXELS_PER_FOOT + ", MAX_WIDTH_FEET: " + MAX_WIDTH_FEET);
 
 const styles = {
-  height: MAX_WIDTH_FEET*PIXELS_PER_FOOT*2,
+  height: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
   width: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
   border: "1px solid black",
-  position: "relative"
+  position: "relative",
+  textAlign: "center",
 };
 
 function genrateBoxProperties(formInput) {
@@ -61,7 +62,10 @@ function isValidDrop(boxes, id, left, top) {
 }
 
 export const DragAndDropContainer = ({ snapToGrid, formInput }) => {
+  console.log("generating boxes: " + JSON.stringify(formInput));
+  
   const [boxes, setBoxes] = useState(genrateBoxProperties(formInput));
+  console.log("boxes generated: " + Object.keys(boxes));
 
   const moveBox = useCallback(
     (id, left, top) => {

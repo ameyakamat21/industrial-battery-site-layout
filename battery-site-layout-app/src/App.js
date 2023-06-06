@@ -41,8 +41,8 @@ function App() {
         }}
       >
         <div className="demo-logo" />
-        <h1>
-          Battery Site App
+        <h1 style={{color: "white"}}>
+          Battery Site Configurator
         </h1>
       </Header>
 

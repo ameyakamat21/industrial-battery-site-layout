@@ -4,7 +4,6 @@ import { ItemTypes } from './ItemTypes.js'
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
 export const Box = ({ id, left, top, hideSourceOnDrag, children, dimensions }) => {
-  console.log("Box l=" + dimensions["length"] + ", w=" + dimensions["width"])
   var style = {
     position: 'absolute',
     border: '1px dashed gray',
