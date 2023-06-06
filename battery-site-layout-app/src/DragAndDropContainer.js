@@ -9,6 +9,8 @@ const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
 console.log("PIXELS_PER_FOOT: " + PIXELS_PER_FOOT + ", MAX_WIDTH_FEET: " + MAX_WIDTH_FEET);
 
+var boxesList = {}
+
 const styles = {
   height: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
   width: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
@@ -16,29 +18,6 @@ const styles = {
   position: "relative",
   textAlign: "center",
 };
-
-function genrateBoxProperties(formInput) {
-  var boxes = {};
-  var boxId=0;
-  var columnFillPositions = new Array(10).fill(0);
-  var currCol = 0;
-  for(const deviceType in formInput) {
-    var boxDimensions = teslaDeviceOfferings[deviceType]["dimensions"];
-    var count = formInput[deviceType];
-    for (let i = 0; i < count; i++) {
-      var xPos = currCol*10;
-      var yPos = columnFillPositions[currCol]
-      var leftOffset = xPos * PIXELS_PER_FOOT;
-      var topOffset = yPos * PIXELS_PER_FOOT;
-      columnFillPositions[currCol] += boxDimensions["length"];
-      var newBox = { top: topOffset, left: leftOffset, title: deviceType, dimensions: boxDimensions }
-      boxes[boxId] = newBox;
-      currCol = (currCol+1)%10;
-      boxId += 1;
-    }
-  }
-  return boxes;
-}
 
 function doSnapToGrid(x, y) {
   const snappedX = Math.round(x / (10*PIXELS_PER_FOOT)) * (10*PIXELS_PER_FOOT);
@@ -61,24 +40,24 @@ function isValidDrop(boxes, id, left, top) {
   }
 }
 
-export const DragAndDropContainer = ({ snapToGrid, formInput }) => {
-  console.log("generating boxes: " + JSON.stringify(formInput));
-  
-  const [boxes, setBoxes] = useState(genrateBoxProperties(formInput));
-  console.log("boxes generated: " + Object.keys(boxes));
+export const DragAndDropContainer = ({formInput, boxes, setBoxes}) => {
+  let getBoxes = () => boxes;
+  console.log("boxes generated: " + JSON.stringify(getBoxes()));
 
   const moveBox = useCallback(
     (id, left, top) => {
-       setBoxes(
-        (boxes) => {      
-          boxes[id].left = left;
-          boxes[id].top = top;
-          return boxes;
-        }
-      );
+      setBoxes(
+        update(boxes, {
+          [id]: {
+            $merge: { left, top },
+          },
+        }),
+      )
     },
-    [boxes, setBoxes]
-  );
+    [boxes, setBoxes],
+  )
+  
+  
   const [, drop] = useDrop(
     () => ({
       accept: ItemTypes.BOX,
@@ -87,14 +66,13 @@ export const DragAndDropContainer = ({ snapToGrid, formInput }) => {
         var left = Math.round(item.left + delta.x);
         var top = Math.round(item.top + delta.y);
         [left, top] = doSnapToGrid(left, top);
-        var boxesCopy = {...boxes};
-        boxesCopy[item.id].left = left;
-        boxesCopy[item.id].top = top;
-        setBoxes(boxesCopy);
+        moveBox(item.id, left, top);
         return undefined;
-      }
-    })
-  );
+      },
+    }),
+    [moveBox],
+  )
+
   return (
     <div ref={drop} style={styles}>
       {Object.keys(boxes).map((key) => {

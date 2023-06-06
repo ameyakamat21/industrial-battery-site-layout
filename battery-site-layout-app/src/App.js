@@ -22,7 +22,12 @@ function HeaderText() {
 
 function App() {
 
-  const [outputPanelState, setOutputPanelState] = useState({isActive: false, formValues:{}});
+  const [boxes, setBoxes] = useState({});
+  const [outputPanelState, setOutputPanelState] = useState(
+    { isActive: false, 
+      formValues:{}, 
+    }
+  );
   
   const {
     token: { colorBgContainer },
@@ -50,10 +55,15 @@ function App() {
       <Breadcrumb style={{ margin: '16px 0' }}>
       </Breadcrumb>
       <div style={{ padding: 24, minHeight: 380, background: colorBgContainer }}>
-        <DeviceInfoTable outputPanelState={outputPanelState} setOutputPanelState={setOutputPanelState}></DeviceInfoTable>
+        <DeviceInfoTable 
+          outputPanelState={outputPanelState} 
+          setOutputPanelState={setOutputPanelState}
+          boxes={boxes}
+          setBoxes={setBoxes}>
+        </DeviceInfoTable>
       </div>
     </Content>
-    <OutputPanel outputPanelState={outputPanelState}></OutputPanel>
+    <OutputPanel outputPanelState={outputPanelState} boxes={boxes} setBoxes={setBoxes}></OutputPanel>
     <Footer style={{ textAlign: 'center' }}>Created by Ameya Kamat © 2023</Footer>
     </Layout>
   );

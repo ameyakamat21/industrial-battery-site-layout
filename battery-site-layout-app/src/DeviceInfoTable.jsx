@@ -1,6 +1,31 @@
 import { Space, Table, Tag,  Button, Form, Input, Card, Breadcrumb } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo';
 
+const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
+
+function genrateBoxProperties(formInput) {
+  var boxes = {};
+  var boxId=0;
+  var columnFillPositions = new Array(10).fill(0);
+  var currCol = 0;
+  for(const deviceType in formInput) {
+    var boxDimensions = teslaDeviceOfferings[deviceType]["dimensions"];
+    var count = formInput[deviceType];
+    for (let i = 0; i < count; i++) {
+      var xPos = currCol*10;
+      var yPos = columnFillPositions[currCol]
+      var leftOffset = xPos * PIXELS_PER_FOOT;
+      var topOffset = yPos * PIXELS_PER_FOOT;
+      columnFillPositions[currCol] += boxDimensions["length"];
+      var newBox = { top: topOffset, left: leftOffset, title: deviceType, dimensions: boxDimensions }
+      boxes[boxId] = newBox;
+      currCol = (currCol+1)%10;
+      boxId += 1;
+    }
+  }
+  return boxes;
+}
+
 const columns = [
   {
     title: 'Device Name',
@@ -50,18 +75,20 @@ const tablePagination = {
     hideOnSinglePage: true
 }
 
-const onFinish = (values, setOutputPanelState) => {
+const onFinish = (values, setOutputPanelState, setBoxes) => {
     setOutputPanelState({isActive: true, formValues:values})
+    var createdBoxes = genrateBoxProperties(values);
+    setBoxes(createdBoxes);
     console.log('Success:', values);
   };
   
-  const onFinishFailed = (errorInfo, setOutputPanelState) => {
-
+  const onFinishFailed = (errorInfo, setOutputPanelState, setBoxes) => {
     setOutputPanelState({isActive: false, formValues:errorInfo})
+    setBoxes({});
     console.log('Failed:', errorInfo);
   };
 
-function DeviceInfoTable({outputPanelState, setOutputPanelState}) {
+function DeviceInfoTable({outputPanelState, setOutputPanelState, boxes, setBoxes}) {
     return (
       <Card title="Site Specifications" bordered={false}>
           <Form
@@ -69,8 +96,8 @@ function DeviceInfoTable({outputPanelState, setOutputPanelState}) {
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ remember: true }}
-          onFinish={(values) => onFinish(values, setOutputPanelState)}
-          onFinishFailed={(errorInfo) => onFinishFailed(errorInfo, setOutputPanelState)}
+          onFinish={(values) => onFinish(values, setOutputPanelState, setBoxes)}
+          onFinishFailed={(errorInfo) => onFinishFailed(errorInfo, setOutputPanelState, setBoxes)}
           autoComplete="off"
           >
               <Table columns={columns} dataSource={Object.values(teslaDeviceOfferings)} pagination={tablePagination} />
