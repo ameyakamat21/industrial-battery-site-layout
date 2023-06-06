@@ -5,30 +5,10 @@ import { Box } from "./Box.js";
 import { ItemTypes } from "./ItemTypes.js";
 import { Breadcrumb, Layout, Menu, Empty,  Card, Col, Row, theme } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo'
+import calculateRectangularArea from "./Utils.js";
 
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 const { Header, Content, Footer } = Layout;
-
-const dndContainerStyles = {
-  height: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
-  width: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
-  border: "1px solid #dedede",
-  borderRadius: '7px',
-  opacity: '50%',
-  position: "relative",
-  textAlign: "center",
-};
-
-const floorAreaContainerStyles = {
-  height: MAX_WIDTH_FEET*PIXELS_PER_FOOT + 10,
-  width: MAX_WIDTH_FEET*PIXELS_PER_FOOT + 10,
-  border: "25px solid red",
-  backgroundColor: "blue",
-  borderRadius: '7px',
-  position: "fixed",
-  textAlign: "center",
-  zIndex: 100,
-};
 
 function doSnapToGrid(x, y) {
   const snappedX = Math.round(x / (10*PIXELS_PER_FOOT)) * (10*PIXELS_PER_FOOT);
@@ -36,13 +16,16 @@ function doSnapToGrid(x, y) {
   return [snappedX, snappedY];
 }
 
-function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
+function isValidDrop(outputPanelState, boxes, id, boxToCheckLeft, boxToCheckTop) {
+  var maxRight = MAX_WIDTH_FEET * PIXELS_PER_FOOT;
+  var maxBottom = outputPanelState.rectangularArea.topPx + outputPanelState.rectangularArea.heightPx + 45*PIXELS_PER_FOOT;
+
   var boxToCheck = boxes[id];
   var boxToCheckRight = boxToCheckLeft + boxToCheck.dimensions.widthPx;
   var boxToCheckBottom = boxToCheckTop + boxToCheck.dimensions.lengthPx;
 
   // Check if being dropped outside the container
-  if(boxToCheckTop < 0 || boxToCheckLeft < 0 || boxToCheckBottom > dndContainerStyles.height || boxToCheckRight > dndContainerStyles.width) {
+  if(boxToCheckTop < 0 || boxToCheckLeft < 0 || boxToCheckBottom > maxBottom || boxToCheckRight > maxRight) {
     return false;
   }
 
@@ -53,9 +36,8 @@ function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
       var currBoxLeft = currBox.left;
       var currBoxRight = currBoxLeft + currBox.dimensions.widthPx;
       var currBoxBottom = currBoxTop + currBox.dimensions.lengthPx;
-      // console.log(`Checking overlap ${id} <${boxToCheckTop}, ${boxToCheckLeft}, ${boxToCheckBottom}, ${boxToCheckRight}> 
-        // with ${currBoxId} <${currBoxTop}, ${currBoxLeft}, ${currBoxBottom}, ${currBoxRight}>`);
 
+      // Check if any vertical and horizontal edges together align
       if(boxToCheckTop == currBoxTop && boxToCheckLeft == currBoxLeft) {
         // console.log("TopLeft conflicts with box: " + currBoxId);
         return false;
@@ -76,6 +58,7 @@ function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
         return false;
       }
 
+      // Check if one box is entirely inside other box
       if(boxToCheckTop >= currBoxTop && boxToCheckTop <= currBoxBottom &&
           boxToCheckBottom >= currBoxTop && boxToCheckBottom <= currBoxBottom &&
           boxToCheckLeft >= currBoxLeft && boxToCheckLeft <= currBoxRight &&
@@ -98,30 +81,36 @@ function isValidDrop(boxes, id, boxToCheckLeft, boxToCheckTop) {
 export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, boxes, setBoxes}) => {
 
   var rectArea = outputPanelState.rectangularArea;
-  rectArea.leftPx = rectArea.left*PIXELS_PER_FOOT;
-  rectArea.widthPx = rectArea.width*PIXELS_PER_FOOT;
-  rectArea.topPx = rectArea.top * PIXELS_PER_FOOT;
-  rectArea.heightPx = rectArea.height * PIXELS_PER_FOOT;
+  var dndContainerStyles = {
+    height: rectArea.topPx + rectArea.heightPx + 45*PIXELS_PER_FOOT,
+    width: MAX_WIDTH_FEET*PIXELS_PER_FOOT,
+    border: "1px solid #dedede",
+    borderRadius: '7px',
+    opacity: '50%',
+    position: "relative",
+    textAlign: "center",
+  };
 
   console.log(`rect area: <${rectArea.topPx} ${rectArea.leftPx} ${rectArea.widthPx} ${rectArea.heightPx}>`);
   const moveBox = useCallback(
     (id, left, top) => {
-      setBoxes(
-        update(boxes, {
-          [id]: {
-            $merge: { left, top },
-          },
-        }),
-      )
+      var boxesCopy = {...boxes};
+      boxesCopy[id].left = left;
+      boxesCopy[id].top = top;
+      setBoxes(boxesCopy);
+
+      var outputPanelStateCopy = {...outputPanelState}
+      outputPanelStateCopy.rectangularArea = calculateRectangularArea(boxesCopy);
+      setOutputPanelState(outputPanelStateCopy);
     },
-    [boxes, setBoxes],
+    [boxes, setBoxes, outputPanelState, setOutputPanelState],
   );
   
   const canDrop = useCallback(
     (id, left, top) => {
-      return isValidDrop(boxes, id, left, top);
+      return isValidDrop(outputPanelState, boxes, id, left, top);
     },
-    [boxes]
+    [boxes, outputPanelState]
   );
   
   const [, drop] = useDrop(
@@ -148,25 +137,24 @@ export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, box
 
   return (
     <Layout style={{backgroundColor: "white"}}>
-      <table style={{verticalAlign: "top", border: "1px solid black"}}>
-        <tbody style={{verticalAlign: "top", border: "1px solid black", textAlign: "center"}}>
+      <table style={{verticalAlign: "top", border: "0px solid black"}}>
+        <tbody style={{verticalAlign: "top", border: "0px solid black", textAlign: "center"}}>
           <tr>
-            <td style={{border: "1px solid black"}}></td>
+            <td style={{border: "0px solid black"}}></td>
             <td>
-              <table style={{width:"100%", height:"100%", border: "1px solid black"}}> 
+              <table style={{height:"100%", border: "0px solid black"}}> 
               <tbody>
                 <tr>
-                  <td>
+                  <td style={{color: "#57b6fa", fontSize: '14px'}}>
                     {rectArea.width} ft
                   </td>
                   </tr>
                   <tr>
-                    <td style={{backgroundColor: "pink"}}>
-                      
+                    <td>
                     <div style={{
-                      backgroundColor: "blue",
+                      backgroundColor: "#57b6fa",
                       width:`${rectArea.widthPx}px`,
-                      height:"5px",
+                      height:"2px",
                       margin: `0px ${rectArea.leftPx}px`
                       }}>
                       </div>
@@ -178,16 +166,16 @@ export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, box
           </tr>
           <tr>
             <td>
-              <table style={{width:"100%", height:"100%", border: "1px solid black", verticalAlign: "top"}}>
+              <table style={{width:"100%", height:"100%", border: "0px solid black", verticalAlign: "top"}}>
                 <tbody>
                   <tr>
-                    <td>
+                    <td style={{color: "#57b6fa", fontSize: '14px'}}>
                       {rectArea.height} ft
                     </td>
-                    <td style={{backgroundColor: "pink", height:"100%", verticalAlign: "top"}}>
+                    <td style={{height:"100%", verticalAlign: "top"}}>
                       <div style={{
-                        backgroundColor: "blue", 
-                        width:"5px", 
+                        backgroundColor: "#57b6fa", 
+                        width:"2px", 
                         height:`${rectArea.heightPx}px`,
                         margin:`${rectArea.topPx}px 0px`,
                         verticalAlign: "top"

@@ -29,7 +29,7 @@ function OutputPanel({outputPanelState, setOutputPanelState, boxes, setBoxes}) {
                     </Col>
                     <Col span={8}>
                         <Card title="Bill of materials" bordered={false}>
-                            <QuoteTable formInput={outputPanelState["formValues"]}></QuoteTable>
+                            <QuoteTable outputPanelState={outputPanelState}></QuoteTable>
                         </Card>
                     </Col>
                 </Row>
@@ -40,13 +40,7 @@ function OutputPanel({outputPanelState, setOutputPanelState, boxes, setBoxes}) {
         )
     }  else {
         return (
-            <Content className="site-layout" style={{ padding: '0 50px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
-            </Breadcrumb>
-            <div style={{ padding: 24, minHeight: 380, background: colorBgContainer }}>
-            <Empty></Empty>
-            </div>
-            </Content> 
+            <></>
         )
     }
 }

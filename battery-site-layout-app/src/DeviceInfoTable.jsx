@@ -1,5 +1,6 @@
 import { Space, Table, Tag,  Button, Form, Input, Card, Breadcrumb } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo';
+import calculateRectangularArea from './Utils';
 
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
@@ -98,15 +99,9 @@ const onFinish = (values, setOutputPanelState, setBoxes) => {
     setOutputPanelState({
       isActive: true, 
       formValues:values,
-      rectangularArea: {
-        "top": 0,
-        "left": 0,
-        "width": boxProperties.rectangularAreaRight, 
-        "height": boxProperties.rectangularAreaBottom,
-      }
+      rectangularArea: calculateRectangularArea(boxProperties.boxes)
     })
     setBoxes(boxProperties.boxes);
-    console.log('Success:', values);
   };
   
   const onFinishFailed = (errorInfo, setOutputPanelState, setBoxes) => {
@@ -127,7 +122,7 @@ function DeviceInfoTable({outputPanelState, setOutputPanelState, boxes, setBoxes
           onFinishFailed={(errorInfo) => onFinishFailed(errorInfo, setOutputPanelState, setBoxes)}
           autoComplete="off"
           >
-              <Table columns={columns} dataSource={Object.values(teslaDeviceOfferings)} pagination={tablePagination} />
+              <Table columns={columns} dataSource={Object.values(teslaDeviceOfferings)} size="small" pagination={tablePagination} />
 
               <Form.Item wrapperCol={{ offset: 18, span: 4 }}>
                 <Breadcrumb style={{ margin: '16px 0' }}>

@@ -22,16 +22,20 @@ function calculateQuote(formInput) {
   };
 }
 
-function QuoteTable({formInput}) {
-
+function QuoteTable({outputPanelState}) {
+    
+    console.log('QuoteTable:', outputPanelState.formValues);
     const { token: { colorBgContainer } } = theme.useToken();
-    var quoteInfo = calculateQuote(formInput);
+    var quoteInfo = calculateQuote(outputPanelState.formValues);
     return (
         <Descriptions className="site-layout">
             <Descriptions.Item label="Total cost" span={3}>
             &#36;{quoteInfo["totalCost"]}
             </Descriptions.Item>
-            <Descriptions.Item label="Total Floor area" span={3}>
+            <Descriptions.Item label="Rectangular land area needed" span={3}>
+            {outputPanelState.rectangularArea.width * outputPanelState.rectangularArea.height} sq ft
+            </Descriptions.Item>
+            <Descriptions.Item label="Floor area needed" span={3}>
             {quoteInfo["totalFloorArea"]} sq ft
             </Descriptions.Item>
             <Descriptions.Item label="Total Energy Output" span={3}>
