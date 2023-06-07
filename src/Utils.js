@@ -2,7 +2,19 @@
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
 function calculateRectangularArea(boxes) {
-    var topMost=0,leftMost=0, rightMost=0, bottomMost=0;
+    if(boxes == null || boxes.length == 0) {
+      return {"topPx": 0, 
+            "leftPx": 0, 
+            "widthPx": 0, 
+            "heightPx": 0,
+            "top": 0, 
+            "left": 0, 
+            "width": 0, 
+            "height": 0,
+          };
+    }
+
+    var topMost=boxes[0].top,leftMost=boxes[0].left, rightMost=0, bottomMost=0;
     for(var currId in boxes) {
       var currBox = boxes[currId];
       topMost=Math.min(topMost, currBox.top);

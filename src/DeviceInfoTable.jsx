@@ -102,7 +102,7 @@ const columns = [
                                           if(totalBatteryCount <= 0) {
                                             return Promise.reject(new Error("At lease 1 industrial battery is needed"));
                                           }
-                                          if(value*4 <= totalBatteryCount) {
+                                          if(value*4 <= totalBatteryCount && totalBatteryCount>=4) {
                                             return Promise.reject(new Error(`At least 1 transformer is needed per 4 industrial batteries. 
                                             Number of batteries is: ${totalBatteryCount}`));
                                           }
