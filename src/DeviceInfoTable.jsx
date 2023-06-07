@@ -85,23 +85,29 @@ const columns = [
                                     name={quantity_label}
                                     rules={
                                       [
-                                        { required: true, message: 'Please input quantity' },
                                         // { pattern: /^\d{1,3}$/, message: 'Please input a number between 0 and 500'},
                                         { transform: (val) => val <= 500 ? val : 500, message: 'Please input a number between 0 and 500'},
 
                                     ({ getFieldValue }) => ({
                                       validator(_, value) {
+
                                         if(quantity_label == "transformer") {
+
                                           var m2xl_count = Number(getFieldValue("meg_2xl"));
                                           var m2_count = Number(getFieldValue("meg_2"));
                                           var m_count = Number(getFieldValue("meg"));
                                           var p_count = Number(getFieldValue("power"));
+
                                           var totalBatteryCount = m2xl_count + m2_count + m_count + p_count;
+                                          if(totalBatteryCount <= 0) {
+                                            return Promise.reject(new Error("At lease 1 industrial battery is needed"));
+                                          }
                                           if(value*4 <= totalBatteryCount) {
                                             return Promise.reject(new Error(`At least 1 transformer is needed per 4 industrial batteries. 
                                             Number of batteries is: ${totalBatteryCount}`));
                                           }
-                                        }
+
+                                        } 
                                         return Promise.resolve();
                                       },
                                     })
