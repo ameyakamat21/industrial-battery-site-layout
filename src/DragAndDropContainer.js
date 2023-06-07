@@ -1,15 +1,12 @@
-import update from "immutability-helper";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useDrop } from "react-dnd";
 import { Box } from "./Box.js";
 import { ItemTypes } from "./ItemTypes.js";
-import { Breadcrumb, Layout } from 'antd';
+import { Layout } from 'antd';
 import { UndoOutlined } from '@ant-design/icons'
-import teslaDeviceOfferings from './DeviceInfo'
 import calculateRectangularArea from "./Utils.js";
 
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
-const { Header, Content, Footer } = Layout;
 
 function doSnapToGrid(x, y) {
   const snappedX = Math.round(x / (10*PIXELS_PER_FOOT)) * (10*PIXELS_PER_FOOT);
@@ -40,22 +37,18 @@ function isValidDrop(outputPanelState, boxes, id, boxToCheckLeft, boxToCheckTop)
 
       // Check if any vertical and horizontal edges together align
       if(boxToCheckTop == currBoxTop && boxToCheckLeft == currBoxLeft) {
-        // console.log("TopLeft conflicts with box: " + currBoxId);
         return false;
       }
        
       if(boxToCheckTop == currBoxTop && boxToCheckRight == currBoxRight) {
-        // console.log("TopRight conflicts with box: " + currBoxId);
         return false;
       }
        
       if(boxToCheckBottom == currBoxBottom && boxToCheckLeft == currBoxLeft) {
-        // console.log("BottomLeft conflicts with box: " + currBoxId);
         return false;
       }
        
       if(boxToCheckBottom == currBoxBottom && boxToCheckRight == currBoxRight) {
-        // console.log("BottomRight conflicts with box: " + currBoxId);
         return false;
       }
 

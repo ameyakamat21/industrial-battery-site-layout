@@ -2,7 +2,7 @@ import {React, useState} from 'react';
 import './index.css';
 import DeviceInfoTable from './DeviceInfoTable';
 import OutputPanel from './OutputPanel';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Layout } from 'antd';
 
 const { Header, Content, Footer } = Layout;
 
@@ -16,10 +16,6 @@ function App() {
     }
   );
   
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
   return (
     <Layout>
       <Header

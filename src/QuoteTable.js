@@ -1,6 +1,7 @@
 import { Badge, Descriptions, theme } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo';
 import FormatUSNumber from './NumberFormat';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 function calculateQuote(formInput, rectangularArea) {
   var totalCost = 0;
@@ -35,6 +36,7 @@ function QuoteTable({outputPanelState}) {
             </Descriptions.Item>
             <Descriptions.Item label="Rectangular land area needed" span={3}>
             {outputPanelState.rectangularArea.width * outputPanelState.rectangularArea.height} sq ft
+            <span style={{width: "5px"}}></span>
             </Descriptions.Item>
             <Descriptions.Item label="Floor area needed" span={3}>
             {quoteInfo["totalFloorArea"]} sq ft

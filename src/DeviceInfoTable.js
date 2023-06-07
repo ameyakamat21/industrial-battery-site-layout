@@ -12,6 +12,19 @@ function genrateBoxProperties(formInput) {
   var currCol = 0;
   var rectangularAreaRight = 0;
   var rectangularAreaBottom = 0;
+
+  // Return the first column with the least fill
+  function getColWithSmallestFill(arr) {
+    var smallestIndex = 0, smallestValueSeen = arr[0];
+    for(var i = 0; i < arr.length; i+=1) {
+      if(arr[i] < smallestValueSeen) {
+        smallestIndex = i;
+        smallestValueSeen = arr[i];
+      }
+    }
+    return smallestIndex;
+  }
+
   for(const deviceType in formInput) {
     var boxDimensions = teslaDeviceOfferings[deviceType].dimensions;
     var title = teslaDeviceOfferings[deviceType].short_name;
@@ -36,7 +49,7 @@ function genrateBoxProperties(formInput) {
       }
 
       boxes[boxId] = newBox;
-      currCol = (currCol+1)%10;
+      currCol = getColWithSmallestFill(columnFillPositions);
       boxId += 1;
     }
   }
@@ -103,7 +116,7 @@ const columns = [
                                           if(totalBatteryCount <= 0) {
                                             return Promise.reject(new Error("At lease 1 industrial battery is needed"));
                                           }
-                                          if(value*4 <= totalBatteryCount && totalBatteryCount>=4) {
+                                          if(value*4 < totalBatteryCount && totalBatteryCount>=4) {
                                             return Promise.reject(new Error(`At least 1 transformer is needed per 4 industrial batteries. 
                                             Number of batteries is: ${totalBatteryCount}`));
                                           }
