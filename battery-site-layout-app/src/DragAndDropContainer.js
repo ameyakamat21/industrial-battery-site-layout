@@ -199,7 +199,7 @@ export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, box
                       hideSourceOnDrag={true}
                       dimensions={dimensions}
                     >
-                      {key}
+                      {title}
                     </Box>
                   );
                 })}

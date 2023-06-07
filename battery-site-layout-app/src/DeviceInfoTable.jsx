@@ -13,6 +13,7 @@ function genrateBoxProperties(formInput) {
   var rectangularAreaBottom = 0;
   for(const deviceType in formInput) {
     var boxDimensions = teslaDeviceOfferings[deviceType].dimensions;
+    var title = teslaDeviceOfferings[deviceType].short_name;
     var count = formInput[deviceType];
     for (let i = 0; i < count; i++) {
       var xPos = currCol*10;
@@ -29,7 +30,7 @@ function genrateBoxProperties(formInput) {
       var newBox = { 
         top: topOffset, 
         left: leftOffset, 
-        title: deviceType, 
+        title: title, 
         dimensions: boxDimensions,
       }
 
