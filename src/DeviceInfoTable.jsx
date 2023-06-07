@@ -1,4 +1,4 @@
-import { Space, Table, Tag,  Button, Form, Input, Card, Breadcrumb } from 'antd';
+import { Table, InputNumber,  Button, Form, Input, Card, Breadcrumb } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo';
 import calculateRectangularArea from './Utils';
 
@@ -83,7 +83,30 @@ const columns = [
     render: (quantity_label) => <Form.Item
                                     label=""
                                     name={quantity_label}
-                                    rules={[{ required: true, message: 'Please input quantity' }]}
+                                    rules={
+                                      [
+                                        { required: true, message: 'Please input quantity' },
+                                        // { pattern: /^\d{1,3}$/, message: 'Please input a number between 0 and 500'},
+                                        { transform: (val) => val <= 500 ? val : 500, message: 'Please input a number between 0 and 500'},
+
+                                    ({ getFieldValue }) => ({
+                                      validator(_, value) {
+                                        if(quantity_label == "transformer") {
+                                          var m2xl_count = Number(getFieldValue("meg_2xl"));
+                                          var m2_count = Number(getFieldValue("meg_2"));
+                                          var m_count = Number(getFieldValue("meg"));
+                                          var p_count = Number(getFieldValue("power"));
+                                          var totalBatteryCount = m2xl_count + m2_count + m_count + p_count;
+                                          if(value*4 <= totalBatteryCount) {
+                                            return Promise.reject(new Error(`At least 1 transformer is needed per 4 industrial batteries. 
+                                            Number of batteries is: ${totalBatteryCount}`));
+                                          }
+                                        }
+                                        return Promise.resolve();
+                                      },
+                                    })
+                                      ]
+                                    }
                                         >
                                     <Input />
                                 </Form.Item>
@@ -129,7 +152,7 @@ function DeviceInfoTable({outputPanelState, setOutputPanelState, boxes, setBoxes
                 <Breadcrumb style={{ margin: '16px 0' }}>
                 </Breadcrumb> 
                 <Button type="primary" htmlType="submit" style={{width: "100%"}}>
-                    Generate layout
+                    Generate Estimate
                 </Button>
               </Form.Item>
           </Form>
