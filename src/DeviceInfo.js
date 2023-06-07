@@ -2,7 +2,7 @@ const teslaDeviceOfferings = {
     'meg_2xl': {
       key: '1',
       device_name: 'Megapack 2XL',
-      short_name: 'Mega 2XL',
+      short_name: 'MP2XL',
       dimensions: {length: 40, width: 10},
       energy: 4,
       cost: 120000,
@@ -13,7 +13,7 @@ const teslaDeviceOfferings = {
     'meg_2': {
       key: '2',
       device_name: 'Megapack 2',
-      short_name: 'Mega 2',
+      short_name: 'MP2',
       dimensions: {length: 30, width: 10},
       energy: 3,
       cost: 80000,
@@ -24,7 +24,7 @@ const teslaDeviceOfferings = {
     'meg':  {
       key: '3',
       device_name: 'Megapack',
-      short_name: 'Mega',
+      short_name: 'MP',
       dimensions: {length: 30, width: 10},
       energy: 2,
       cost: 50000,
@@ -35,7 +35,7 @@ const teslaDeviceOfferings = {
     'power': {
       key: '4',
       device_name: 'Powerpack',
-      short_name: 'Powerpack',
+      short_name: 'PP',
       dimensions: {length: 10, width: 10},
       energy: 1,
       cost: 20000,

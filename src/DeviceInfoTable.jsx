@@ -1,6 +1,7 @@
 import { Table, InputNumber,  Button, Form, Input, Card, Breadcrumb } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo';
 import calculateRectangularArea from './Utils';
+import FormatUSNumber from './NumberFormat';
 
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
@@ -68,7 +69,7 @@ const columns = [
     title: 'Cost',
     dataIndex: 'cost',
     key: 'cost',
-    render: (cost) => <p>&#36;{cost}</p>
+    render: (cost) => <p>&#36;{FormatUSNumber(cost)}</p>
   },
   {
     title: 'Release Year',

@@ -228,9 +228,9 @@ export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, box
                       <div>
                       {title}
                       </div>
-                      <div>
+                      {/* <div>
                         <UndoOutlined onClick={() => rotateBox(key)}/>
-                      </div>
+                      </div> */}
                     </Box>
                   );
                 })}

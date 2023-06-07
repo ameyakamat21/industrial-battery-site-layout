@@ -1,10 +1,12 @@
 import { Badge, Descriptions, theme } from 'antd';
 import teslaDeviceOfferings from './DeviceInfo';
+import FormatUSNumber from './NumberFormat';
 
-function calculateQuote(formInput) {
+function calculateQuote(formInput, rectangularArea) {
   var totalCost = 0;
   var totalEnergyMwh = 0;
   var totalFloorArea = 0;
+  var rectangularArea = rectangularArea.width * rectangularArea.height;
 
   for(const deviceType in formInput) {
     var quantity = formInput[deviceType];
@@ -18,18 +20,18 @@ function calculateQuote(formInput) {
     'totalCost': totalCost, 
     'totalFloorArea': totalFloorArea, 
     'totalEnergyMwh': totalEnergyMwh,
-    'energyDensityKwh': Math.round(1000 * 10 * totalEnergyMwh / totalFloorArea) / 10,
+    'energyDensityKwh': Math.round(1000 * 10 * totalEnergyMwh / rectangularArea) / 10,
   };
 }
 
 function QuoteTable({outputPanelState}) {
     
     const { token: { colorBgContainer } } = theme.useToken();
-    var quoteInfo = calculateQuote(outputPanelState.formValues);
+    var quoteInfo = calculateQuote(outputPanelState.formValues, outputPanelState.rectangularArea);
     return (
         <Descriptions className="site-layout">
             <Descriptions.Item label="Total cost" span={3}>
-            &#36;{quoteInfo["totalCost"]}
+            &#36;{FormatUSNumber(quoteInfo["totalCost"])}
             </Descriptions.Item>
             <Descriptions.Item label="Rectangular land area needed" span={3}>
             {outputPanelState.rectangularArea.width * outputPanelState.rectangularArea.height} sq ft
