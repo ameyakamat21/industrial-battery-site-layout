@@ -4,6 +4,7 @@ import { ItemTypes } from './ItemTypes.js'
 const {PIXELS_PER_FOOT,MAX_WIDTH_FEET} = require('./Constants');
 
 export const Box = ({ id, left, top, hideSourceOnDrag, children, dimensions }) => {
+  console.log(`Rendering box: ${id} <${top}, ${left}, ${dimensions.lengthPx+top}, ${dimensions.widthPx+left} > `);
 
   var style = {
     position: 'absolute',

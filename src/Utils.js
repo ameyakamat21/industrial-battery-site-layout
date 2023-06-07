@@ -22,7 +22,7 @@ function calculateRectangularArea(boxes) {
       rightMost=Math.max(rightMost, currBox.left + currBox.dimensions.widthPx);
       bottomMost=Math.max(bottomMost, currBox.top + currBox.dimensions.lengthPx);
     }
-    console.log("calculateRectArea, widthPx: " + rightMost-leftMost)
+    console.log("calculateRectArea, widthPx: " + rightMost-leftMost);
     return {"topPx": topMost, 
             "leftPx": leftMost, 
             "widthPx": rightMost - leftMost, 

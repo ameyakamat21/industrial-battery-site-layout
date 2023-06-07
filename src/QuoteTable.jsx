@@ -24,7 +24,6 @@ function calculateQuote(formInput) {
 
 function QuoteTable({outputPanelState}) {
     
-    console.log('QuoteTable:', outputPanelState.formValues);
     const { token: { colorBgContainer } } = theme.useToken();
     var quoteInfo = calculateQuote(outputPanelState.formValues);
     return (

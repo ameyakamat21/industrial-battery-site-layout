@@ -3,7 +3,8 @@ import { useCallback, useState } from "react";
 import { useDrop } from "react-dnd";
 import { Box } from "./Box.js";
 import { ItemTypes } from "./ItemTypes.js";
-import { Breadcrumb, Layout, Menu, Empty,  Card, Col, Row, theme } from 'antd';
+import { Breadcrumb, Layout } from 'antd';
+import { UndoOutlined } from '@ant-design/icons'
 import teslaDeviceOfferings from './DeviceInfo'
 import calculateRectangularArea from "./Utils.js";
 
@@ -101,7 +102,6 @@ export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, box
     textAlign: "center",
   };
 
-  console.log(`rect area: <${rectArea.topPx} ${rectArea.leftPx} ${rectArea.widthPx} ${rectArea.heightPx}>`);
   const moveBox = useCallback(
     (id, left, top) => {
       var boxesCopy = {...boxes};
@@ -144,6 +144,22 @@ export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, box
     }),
     [moveBox, canDrop],
   )
+
+  const rotateBox = useCallback(
+    (id) => {
+      var boxesCopy = {...boxes};
+      console.log("Swapping dimens for " + id);
+      var heightPx = boxesCopy[id].dimensions.heightPx;
+      boxesCopy[id].dimensions.heightPx = boxesCopy[id].dimensions.widthPx;
+      boxesCopy[id].dimensions.widthPx = heightPx;
+      setBoxes(boxesCopy);
+
+      // var outputPanelStateCopy = {...outputPanelState}
+      // outputPanelStateCopy.rectangularArea = calculateRectangularArea(boxesCopy);
+      // setOutputPanelState(outputPanelStateCopy);
+    },
+    [boxes, setBoxes, outputPanelState, setOutputPanelState],
+  );
 
   return (
     <Layout style={{backgroundColor: "white"}}>
@@ -209,7 +225,12 @@ export const DragAndDropContainer = ({outputPanelState, setOutputPanelState, box
                       hideSourceOnDrag={true}
                       dimensions={dimensions}
                     >
+                      <div>
                       {title}
+                      </div>
+                      <div>
+                        <UndoOutlined onClick={() => rotateBox(key)}/>
+                      </div>
                     </Box>
                   );
                 })}
