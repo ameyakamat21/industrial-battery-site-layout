@@ -58,6 +58,16 @@ function isValidDrop(outputPanelState, boxes, id, boxToCheckLeft, boxToCheckTop)
         return false;
       }
 
+      if(boxToCheckLeft == currBoxLeft && boxToCheckRight == currBoxRight) {
+        if(boxToCheckTop > currBoxTop && boxToCheckTop < currBoxBottom) {
+          return false;
+        }
+
+        if(boxToCheckBottom > currBoxTop && boxToCheckBottom < currBoxBottom) {
+          return false;
+        }
+      }
+
       // Check if one box is entirely inside other box
       if(boxToCheckTop >= currBoxTop && boxToCheckTop <= currBoxBottom &&
           boxToCheckBottom >= currBoxTop && boxToCheckBottom <= currBoxBottom &&

@@ -28,7 +28,7 @@ function OutputPanel({outputPanelState, setOutputPanelState, boxes, setBoxes}) {
                         </Card>
                     </Col>
                     <Col span={8}>
-                        <Card title="Bill of materials" bordered={false}>
+                        <Card title="Estimated Cost and Metrics" bordered={false}>
                             <QuoteTable outputPanelState={outputPanelState}></QuoteTable>
                         </Card>
                     </Col>
